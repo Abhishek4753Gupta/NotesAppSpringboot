@@ -1,0 +1,29 @@
+# ── Java / Maven ──────────────────────────────────────────
+backend/target/
+*.class
+*.jar
+*.war
+
+# ── Node / Vite ───────────────────────────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+*.local
+
+# ── Env & secrets ─────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# Real backend config (keep application.yml.example as the template)
+backend/src/main/resources/application.yml
+
+# ── IDE ───────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+*.log
+
+# ── OS ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

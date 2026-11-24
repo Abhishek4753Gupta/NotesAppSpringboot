@@ -1,0 +1,69 @@
+# ─────────────────────────────────────────────────────────────
+# Backend configuration TEMPLATE.
+#
+# Copy to `application.yml` (same directory, gitignored) and
+# fill in real values, OR export the env vars listed in
+# `.env.example`. Never commit real credentials.
+# ─────────────────────────────────────────────────────────────
+
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: notesapp-backend
+
+  datasource:
+    # NOTE: a Supabase *direct* host (db.<ref>.supabase.co) is IPv6-only.
+    # If your machine has no IPv6 route, use the Supavisor pooler instead:
+    #   jdbc:postgresql://aws-0-<region>.pooler.supabase.com:5432/postgres
+    # with username "postgres.<project-ref>".
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      pool-name: NotesAppHikariPool
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: false
+
+  data:
+    redis:
+      # Credentials MUST be embedded in the URL: Spring Boot ignores
+      # spring.data.redis.username/password whenever spring.data.redis.url is set.
+      url: ${SPRING_DATA_REDIS_URL}
+      timeout: 5000ms
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 300000   # default TTL; per-cache overrides live in RedisConfig
+      cache-null-values: false
+
+# ── JWT ──────────────────────────────────────────────────────
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+# ── CORS ─────────────────────────────────────────────────────
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
+# ── Rate limiting (Bucket4j sliding window) ──────────────────
+rate-limit:
+  capacity: ${RATE_LIMIT_CAPACITY:100}
+  window-seconds: ${RATE_LIMIT_WINDOW_SECONDS:60}
+
+logging:
+  level:
+    root: INFO
+    com.notesapp: DEBUG
